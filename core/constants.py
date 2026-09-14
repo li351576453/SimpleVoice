@@ -1,13 +1,20 @@
 # ---------- MIDI 范围 ----------
-TOTAL_MIDI = 128            # 0 ~ 127
-TOP_MIDI = 96               # 最上面的音（C7），往下排列
-KEY_HEIGHT = 20             # 每个半音的高度（像素）
+TOTAL_MIDI = 128
+TOP_MIDI = 96
+KEY_HEIGHT = 20
 
 # ---------- 时间 ----------
-CELL_WIDTH = 40             # 一格宽度
-NUM_CELLS = 256             # 总格数
-BEATS_PER_BAR = 4           # 每小节拍数
+CELL_WIDTH = 40
+NUM_CELLS = 256
+BEATS_PER_BAR = 4
+DEFAULT_PPQ = 4
 
 # ---------- UI 尺寸 ----------
-PIANO_WIDTH = 80            # 钢琴键栏宽度
-TIMELINE_HEIGHT = 28        # 时间轴高度
+PIANO_WIDTH = 80
+TIMELINE_HEIGHT = 28
+
+# ---------- 缩放范围 ----------
+MIN_CELL_WIDTH = 10
+MAX_CELL_WIDTH = 120
+MIN_KEY_HEIGHT = 8
+MAX_KEY_HEIGHT = 40

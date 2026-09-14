@@ -15,9 +15,6 @@ def note_name(midi: int) -> str:
 
 
 class PianoKeys(QWidget):
-    """左侧钢琴键侧栏。固定宽度，不自己滚动，
-    由外部通过 set_scroll_offset 控制画哪些音。"""
-
     notePressed = pyqtSignal(int)
     noteReleased = pyqtSignal(int)
 
@@ -25,7 +22,14 @@ class PianoKeys(QWidget):
         super().__init__(parent)
         self.setFixedWidth(PIANO_WIDTH)
         self.scroll_offset = 0
+        self.key_height = KEY_HEIGHT
         self.pressed = set()
+
+    def set_key_height(self, h: int):
+        if h == self.key_height:
+            return
+        self.key_height = h
+        self.update()
 
     def set_scroll_offset(self, offset: int):
         if offset != self.scroll_offset:
@@ -37,35 +41,37 @@ class PianoKeys(QWidget):
         p.fillRect(self.rect(), QColor(30, 30, 40))
 
         h = self.height()
-        first_visible_index = self.scroll_offset // KEY_HEIGHT
-        last_visible_index = (self.scroll_offset + h) // KEY_HEIGHT + 1
+        kh = self.key_height
+        first_visible_index = self.scroll_offset // kh
+        last_visible_index = (self.scroll_offset + h) // kh + 1
 
         for i in range(first_visible_index, last_visible_index + 1):
             midi = TOP_MIDI - i
             if midi < 0 or midi >= TOTAL_MIDI:
                 continue
-            y = i * KEY_HEIGHT - self.scroll_offset
-            rect = QRect(0, y, PIANO_WIDTH, KEY_HEIGHT)
+            y = i * kh - self.scroll_offset
+            rect = QRect(0, y, PIANO_WIDTH, kh)
 
             if is_black_key(midi):
-                color = QColor(60, 130, 200) if midi in self.pressed else QColor(25, 25, 30)
-                black_rect = QRect(PIANO_WIDTH // 2, y, PIANO_WIDTH // 2, KEY_HEIGHT - 2)
-                p.fillRect(black_rect, color)
-                p.setPen(QColor(0, 0, 0))
-                p.drawRect(black_rect)
+                base = QColor(40, 40, 50)
+                pressed_color = QColor(70, 140, 210)
+                text_color = QColor(180, 180, 190)
             else:
-                color = QColor(120, 200, 255) if midi in self.pressed else QColor(240, 240, 245)
-                p.fillRect(rect, color)
-                p.setPen(QColor(80, 80, 90))
-                p.drawRect(rect)
+                base = QColor(240, 240, 245)
+                pressed_color = QColor(120, 200, 255)
+                text_color = QColor(70, 70, 80)
 
-            if midi % 12 == 0:
-                p.setPen(QColor(90, 90, 90))
-                p.drawText(4, y + KEY_HEIGHT - 5, note_name(midi))
+            color = pressed_color if midi in self.pressed else base
+            p.fillRect(rect, color)
+            p.setPen(QColor(80, 80, 90))
+            p.drawRect(rect)
+
+            p.setPen(text_color)
+            p.drawText(6, y + kh - 6, note_name(midi))
 
     def _hit_test(self, y_local: int) -> int:
         y_global = y_local + self.scroll_offset
-        i = y_global // KEY_HEIGHT
+        i = y_global // self.key_height
         midi = TOP_MIDI - i
         if 0 <= midi < TOTAL_MIDI:
             return midi

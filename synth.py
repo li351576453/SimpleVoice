@@ -2,7 +2,7 @@ import numpy as np
 import sounddevice as sd
 
 SAMPLE_RATE = 48000
-BLOCK_SIZE = 512
+BLOCK_SIZE = 128
 
 
 def midi_to_freq(midi: int) -> float:

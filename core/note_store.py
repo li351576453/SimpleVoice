@@ -33,3 +33,8 @@ class NoteStore(QObject):
     def active_at(self, cell: int) -> set:
         """返回当前格正在响的所有 midi 集合"""
         return {n.midi for n in self.notes if n.start <= cell < n.end()}
+
+    def set_notes(self, notes: list[Note]):
+        """批量替换所有音符（用于加载工程）"""
+        self.notes = notes
+        self.changed.emit()

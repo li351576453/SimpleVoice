@@ -7,6 +7,7 @@ from core.constants import (
     MIN_CELL_WIDTH, MAX_CELL_WIDTH, MIN_KEY_HEIGHT, MAX_KEY_HEIGHT,
 )
 from core.notes import Note
+from ui.main_window.piano_keys import note_name
 
 
 class EditGrid(QWidget):
@@ -344,6 +345,10 @@ class EditGrid(QWidget):
             p.fillRect(x + 1, y + 1, w - 2, h - 2, fill)
             p.setPen(border)
             p.drawRect(x + 1, y + 1, w - 2, h - 2)
+
+            if w >= 24:
+                p.setPen(QColor(20, 20, 30))
+                p.drawText(int(x) + 4, int(y) + int(h / 2) + 4, note_name(n.midi))
 
         if self.selection_rect:
             x1, y1, x2, y2 = self.selection_rect
